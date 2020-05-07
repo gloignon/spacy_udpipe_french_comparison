@@ -9,16 +9,17 @@ library(data.table)
 ##  + Note: no xpos in this treebank
 ##############################################################################################
 
-## Uncomment and run the following to grab a fresh copy of the test data.
-#download.file(url = "https://raw.githubusercontent.com/UniversalDependencies/UD_French-Sequoia/master/fr_sequoia-ud-test.conllu", 
-#             destfile = "gold.conllu")
+## Uncomment and run the following to grab a fresh copy of the Sequoia test data.
+download.file(url = "https://raw.githubusercontent.com/UniversalDependencies/UD_French-Sequoia/master/fr_sequoia-ud-test.conllu", 
+             destfile = "gold.conllu")
 
 
-# Uncomment and run following instead for old version of test data
+# Uncomment and run following instead for old version of Sequoia's test data
 #download.file(url = "https://github.com/UniversalDependencies/UD_French-Sequoia/archive/r2.0-test.zip",
 #              destfile = "r2.0-test.zip")
 #unzip("r2.5-test.zip", files = "UD_French-Sequoia-r2.0-test/fr_sequoia-ud-test.conllu", exdir = getwd(), junkpaths = TRUE)
 #file.copy("fr_sequoia-ud-test.conllu", "gold.conllu", overwrite = TRUE)
+
 
 gold <- udpipe_read_conllu("gold.conllu")
 sentences <- unique(gold$sentence)
@@ -59,6 +60,9 @@ cat(as_conllu(x), file = file("predictions_spacy.conllu", encoding = "UTF-8"))
 spacy_finalize()
 
 ## Compare evaluations
+cat("\n ---- GSD ---- \n")
 system("python evaluation_script/conll17_ud_eval.py -v gold.conllu predictions_udpipe_gsd.conllu")
+cat("\n ---- Sequoia ---- \n")
 system("python evaluation_script/conll17_ud_eval.py -v gold.conllu predictions_udpipe_sequoia.conllu")
+cat("\n ---- spaCy fr ---- \n")
 system("python evaluation_script/conll17_ud_eval.py -v gold.conllu predictions_spacy.conllu")
